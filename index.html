@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Brasileirão - Escalação 4-3-3</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="container">
+<h1>Pesquisar times do Brasileirão</h1>
+
+
+<div class="search-area">
+<input id="teamSearch" placeholder="Digite o nome do time (somente Brasileirão)" autocomplete="off">
+<ul id="suggestions" class="suggestions"></ul>
+</div>
+
+
+<section id="teamSection" class="team-section hidden">
+<h2 id="teamName"></h2>
+<div class="pitch-wrapper">
+<div id="pitch" class="pitch">
+<!-- Positions will be injected here -->
+</div>
+</div>
+
+
+<div class="bench">
+<h3>Banco de Reservas</h3>
+<div id="benchList" class="bench-list"></div>
+</div>
+</section>
+
+
+<!-- Modal for player info -->
+<div id="playerModal" class="modal hidden">
+<div class="modal-content">
+<button id="closeModal" class="close">×</button>
+<div id="playerDetails"></div>
+</div>
+</div>
+
+
+</main>
+
+
+<script src="script.js"></script>
+</body>
+</html>
