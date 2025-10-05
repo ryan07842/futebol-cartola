@@ -12,10 +12,16 @@
   <main class="container">
     <h1>Pesquisar times do Brasileirão</h1>
 
-    <div class="search-area">
-      <input id="teamSearch" placeholder="Digite o nome do time (somente Brasileirão)" autocomplete="off">
-      <ul id="suggestions" class="suggestions"></ul>
-    </div>
+    <form id="searchTeamForm" class="search-form">
+      <div class="search-area">
+        <input
+          id="teamSearch"
+          placeholder="Digite o nome do time (somente Brasileirão)"
+          autocomplete="off"
+        >
+        <ul id="suggestions" class="suggestions"></ul>
+      </div>
+    </form>
 
     <section id="teamSection" class="team-section hidden">
       <h2 id="teamName"></h2>
