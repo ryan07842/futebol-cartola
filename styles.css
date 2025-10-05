@@ -1,23 +1,139 @@
 :root {
-  background-color: #0a1057;
-  color: whitesmoke;
+  --bg: #0a1057;
+  --field: #0b702d;
+  --text: #f2f2f2;
 }
 
-.hidden {
-  display: none;
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  overflow: auto;
+  text-align: center;
+  padding: 1rem;
 }
 
 #teamSearch {
-  width: 550px;
-  font-size: 1.15rem;
-  padding: 0.5rem;
+  width: 250px;
+  padding: 0.4rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: none;
 }
+
+button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #005fcc;
+}
+
+.pitch-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.pitch {
+  position: relative;
+  width: 350px;
+  height: 500px;
+  background: var(--field);
+  border: 3px solid white;
+  border-radius: 10px;
+  margin: 0 auto;
+  box-shadow: 0 0 10px #0008;
+}
+
+/* Linhas da formação */
+.line {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  width: 100%;
+}
+
+/* Posições 4-3-3 */
+.line.fwd { top: 10%; }  /* 3 atacantes */
+.line.mid { top: 35%; }  /* 3 meias */
+.line.def { top: 60%; }  /* 4 defensores */
+.line.gk  { top: 85%; }  /* goleiro */
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.player img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 1px solid white;
+}
+
+.player span {
+  font-size: 9px;
+  margin-top: 2px;
+  max-width: 55px;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+/* Banco de reservas */
+.bench {
+  margin-top: 2rem;
+}
+
+.bench-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.bench .player img {
+  width: 30px;
+  height: 30px;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  color: black;
+  padding: 1rem;
+  border-radius: 10px;
+  max-width: 300px;
+  text-align: left;
+}
+
+.close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  float: right;
+  cursor: pointer;
+}
+
+.hidden { display: none; }
