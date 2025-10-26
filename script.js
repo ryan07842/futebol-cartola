@@ -45,22 +45,60 @@ function selectTeam(team) {
       teamSection.classList.remove("hidden");
 
       const squad = data.squad || [];
-      const starters = squad.slice(0, 11);
-      const reserves = squad.slice(11);
 
-      renderFormation(starters);
-      renderBench(reserves);
+      const goalkeepers = squad.filter(p => p.position === "Goalkeeper");
+      const defence = squad.filter(p => {
+        const defencePositions = ["Defence"];
+        return defencePositions.includes(p.position);
+      });
+      const midfield = squad.filter(p => {
+        const midfieldPositions = ["Midfield", "Centre-Back", "Attacking Midfield", "Defensive Midfield", "Central Midfield"];
+        return midfieldPositions.includes(p.position);
+      });
+      const offence = squad.filter(p => {
+        const offencePositions = ["Offence", "Left Winger", "Right Winger", "Striker", "Centre-Forward"];
+        return offencePositions.includes(p.position);
+      });
+
+      const benchPlayers = renderFormation(goalkeepers, defence, midfield, offence);
+      renderBench(benchPlayers);
     })
     .catch(err => console.error(err));
 }
 
-function renderFormation(players) {
+function shuffleArray(array) {
+  for(let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+}
+
+function renderFormation(goalkeepers, defence, midfield, offence) {
   const pitch = document.getElementById("pitch");
 
-  createLine(pitch, "gk", players.slice(0, 1));  // 1 goleiro
-  createLine(pitch, "def", players.slice(1, 5)); // 4 zagueiros
-  createLine(pitch, "mid", players.slice(5, 8)); // 3 meias
-  createLine(pitch, "fwd", players.slice(8, 11)); // 3 atacantes
+  shuffleArray(goalkeepers);
+  shuffleArray(defence);
+  shuffleArray(midfield);
+  shuffleArray(offence);
+
+  const gk = goalkeepers.slice(0, 1);
+  const def = defence.slice(0, 4);
+  const mid = midfield.slice(0, 3);
+  const off = offence.slice(0, 3);
+
+  const reserves = goalkeepers.slice(1)
+    .concat(defence.slice(4))
+    .concat(midfield.slice(3))
+    .concat(offence.slice(3));
+
+  createLine(pitch, "gk", gk);  // 1 goleiro
+  createLine(pitch, "def", def); // 4 zagueiros
+  createLine(pitch, "mid", mid); // 3 meias
+  createLine(pitch, "fwd", off); // 3 atacantes
+
+  return reserves;
 }
 
 function createLine(pitch, lineClass, players) {
