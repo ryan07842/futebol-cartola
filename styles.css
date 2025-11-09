@@ -16,31 +16,29 @@ body {
   padding: 1rem;
 }
 
-#teamSearch {
-  width: 250px;
+.team-selector {
+  margin-bottom: 1.5rem;
+}
+
+select {
   padding: 0.4rem;
   font-size: 1rem;
   border-radius: 5px;
   border: none;
 }
 
-button {
-  padding: 0.4rem 0.8rem;
-  border: none;
-  background: #007bff;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #005fcc;
+/* Layout lateral */
+.team-layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 
 .pitch-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: 1.5rem;
 }
 
 .pitch {
@@ -50,11 +48,37 @@ button:hover {
   background: var(--field);
   border: 3px solid white;
   border-radius: 10px;
-  margin: 0 auto;
   box-shadow: 0 0 10px #0008;
+  overflow: hidden;
 }
 
-/* Linhas da formação */
+/* Painel lateral */
+.team-info {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+  border-radius: 10px;
+  width: 250px;
+  text-align: left;
+  color: #f2f2f2;
+}
+
+.team-info img {
+  width: 80px;
+  height: 80px;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.team-info a {
+  color: #00c3ff;
+  text-decoration: none;
+}
+
+.team-info a:hover {
+  text-decoration: underline;
+}
+
+/* Formação */
 .line {
   position: absolute;
   display: flex;
@@ -62,12 +86,10 @@ button:hover {
   gap: 25px;
   width: 100%;
 }
-
-/* Posições 4-3-3 */
-.line.fwd { top: 10%; }  /* 3 atacantes */
-.line.mid { top: 35%; }  /* 3 meias */
-.line.def { top: 60%; }  /* 4 defensores */
-.line.gk  { top: 85%; }  /* goleiro */
+.line.fwd { top: 10%; }
+.line.mid { top: 35%; }
+.line.def { top: 60%; }
+.line.gk  { top: 85%; }
 
 .player {
   display: flex;
@@ -75,38 +97,26 @@ button:hover {
   align-items: center;
   cursor: pointer;
 }
-
 .player img {
   width: 35px;
   height: 35px;
   border-radius: 50%;
   border: 1px solid white;
 }
-
 .player span {
   font-size: 9px;
   margin-top: 2px;
   max-width: 55px;
   text-align: center;
-  word-wrap: break-word;
 }
 
-/* Banco de reservas */
-.bench {
-  margin-top: 2rem;
-}
-
+/* Banco */
 .bench-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   margin-top: 1rem;
-}
-
-.bench .player img {
-  width: 30px;
-  height: 30px;
 }
 
 /* Modal */
@@ -118,16 +128,13 @@ button:hover {
   justify-content: center;
   align-items: center;
 }
-
 .modal-content {
   background: white;
   color: black;
   padding: 1rem;
   border-radius: 10px;
   max-width: 300px;
-  text-align: left;
 }
-
 .close {
   background: none;
   border: none;

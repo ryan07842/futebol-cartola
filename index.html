@@ -6,36 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Brasileirão - Escalação 4-3-3</title>
   <link rel="stylesheet" href="styles.css">
-</head> 
+  <script defer src="script.js"></script> <!-- 👈 defer garante execução correta -->
+</head>
+
 <body>
   <main class="container">
     <h1>Escalação 4-3-3 - Brasileirão</h1>
 
-    <form id="searchTeamForm" class="search-form">
-      <input id="teamSearch" placeholder="Digite o nome do time (ex: flamengo)" autocomplete="off" list="teamsList">
-      <datalist id="teamsList">
-        <option value="atlético-mg">
-        <option value="bahia">
-        <option value="botafogo">
-        <option value="bragantino">
-        <option value="corinthians">
-        <option value="cruzeiro">
-        <option value="flamengo">
-        <option value="fluminense">
-        <option value="fortaleza">
-        <option value="grêmio">
-        <option value="internacional">
-        <option value="juventude">
-        <option value="palmeiras">
-        <option value="são paulo">
-        <option value="vasco da gama">
-        <option value="vitória">
-      </datalist>
-      <button type="submit">Pesquisar</button>
-    </form>
+    <section class="team-selector">
+      <label for="teamSelect"><strong>Times do Brasileirão Série A (atual):</strong></label>
+      <select id="teamSelect">
+        <option value="">Selecione um time</option>
+      </select>
+    </section>
 
     <section id="teamSection" class="hidden">
       <h2 id="teamName"></h2>
+
+      <!-- 🏟️ Info do time -->
+      <div id="teamInfo" class="team-info hidden"></div>
+
       <div class="pitch-wrapper">
         <div id="pitch" class="pitch"></div>
       </div>
@@ -45,15 +35,13 @@
         <div id="benchList" class="bench-list"></div>
       </div>
     </section>
- 
+
     <div id="playerModal" class="modal hidden">
       <div class="modal-content">
         <button id="closeModal" class="close">×</button>
         <div id="playerDetails"></div>
       </div>
-    </div> 
+    </div>
   </main>
-
-  <script src="script.js"></script>
 </body>
-</html> 
+</html>
