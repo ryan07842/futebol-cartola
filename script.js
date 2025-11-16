@@ -92,26 +92,34 @@ function selectTeam(team) {
 
       // Jogadores
       const squad = data.squad || [];
-      const goalkeepers = squad.filter(p => p.position === "Goalkeeper");
-      const defence = squad.filter(p => p.position === "Defence");
-      const midfield = squad.filter(p => p.position === "Midfield");
-      const offence = squad.filter(p => p.position === "Offence");
+
+      const goalkeepers = [];
+      const defence = [];
+      const midfield = [];
+      const offence = [];
+
+      squad.forEach(p => {
+        if (p.position === "Goalkeeper") {
+          p.positionImage = "https://static.vecteezy.com/ti/vetor-gratis/p1/3773404-futebol-luvas-com-bola-gratis-vetor.jpg";
+          goalkeepers.push(p);
+        } else if (["Defence", "Left-Back", "Right-Back", "Centre-Back"].includes(p.position)) {
+          p.positionImage = "https://static.vecteezy.com/ti/vetor-gratis/p1/27382508-medieval-heraldico-casaco-do-bracos-desenho-animado-plano-ilustracao-defesa-e-protecao-velho-armas-e-armaduras-do-cavaleiro-e-guerreiro-cinzento-guarda-escudo-e-cruzado-espada-vetor.jpg";
+          defence.push(p);
+        } else if (["Midfield", "Central Midfield", "Attacking Midfield", "Defensive Midfield"].includes(p.position)) {
+          p.positionImage = "https://images.vexels.com/media/users/3/140310/isolated/preview/e26362612f9316ef32b49451475d8f07-passe-de-jogador-de-futebol.png";
+          midfield.push(p);
+        } else if (["Offence", "Forward", "Left Winger", "Right Winger", "Centre-Forward"].includes(p.position)) {
+          p.positionImage = "https://images.vexels.com/media/users/3/234542/isolated/preview/52602949bf63a8b7c396157d55bc5d97-rede-de-gol-de-futebol.png";
+          offence.push(p);
+        } else {
+          p.positionImage = "https://cdn-icons-png.flaticon.com/512/3176/3176266.png";
+        }
+      });
 
       const benchPlayers = renderFormation(goalkeepers, defence, midfield, offence);
       renderBench(benchPlayers);
     })
     .catch(err => console.error(err));
-}
-
-// Ícones diferentes por posição
-function getPlayerImage(position) {
-  switch (position) {
-    case "Goalkeeper": return "https://static.vecteezy.com/ti/vetor-gratis/p1/3773404-futebol-luvas-com-bola-gratis-vetor.jpg";
-    case "Defence": return "https://static.vecteezy.com/ti/vetor-gratis/p1/27382508-medieval-heraldico-casaco-do-bracos-desenho-animado-plano-ilustracao-defesa-e-protecao-velho-armas-e-armaduras-do-cavaleiro-e-guerreiro-cinzento-guarda-escudo-e-cruzado-espada-vetor.jpg";
-    case "Midfield": return "https://images.vexels.com/media/users/3/140310/isolated/preview/e26362612f9316ef32b49451475d8f07-passe-de-jogador-de-futebol.png";
-    case "Offence": return "https://images.vexels.com/media/users/3/234542/isolated/preview/52602949bf63a8b7c396157d55bc5d97-rede-de-gol-de-futebol.png";
-    default: return "https://cdn-icons-png.flaticon.com/512/3176/3176266.png";
-  }
 }
 
 // Renderização da formação
@@ -140,8 +148,7 @@ function createLine(pitch, players, centerY, yPos) {
     div.style.left = `${x}%`;
     div.style.top = `${yPos}%`;
 
-    const img = getPlayerImage(p.position);
-    div.innerHTML = `<img src="${img}" alt=""><span>${p.name}</span>`;
+    div.innerHTML = `<img src="${p.positionImage}" alt=""><span>${p.name}</span>`;
     div.addEventListener("click", () => showPlayerInfo(p));
     pitch.appendChild(div);
   });
@@ -151,10 +158,9 @@ function createLine(pitch, players, centerY, yPos) {
 function renderBench(players) {
   const bench = document.getElementById("benchList");
   players.forEach(p => {
-    const img = getPlayerImage(p.position);
     const el = document.createElement("div");
     el.classList.add("player");
-    el.innerHTML = `<img src="${img}" alt=""><span>${p.name}</span>`;
+    el.innerHTML = `<img src="${p.positionImage}" alt=""><span>${p.name}</span>`;
     el.addEventListener("click", () => showPlayerInfo(p));
     bench.appendChild(el);
   });
