@@ -1,7 +1,7 @@
 const API_BASE = "https://api.football-data.org/v4/";
 const API_KEY = "9fe986d3f3e04c0f82e05d07aad1afd3";
 
-// Carrega os times
+// Carregar times
 document.addEventListener("DOMContentLoaded", () => {
   fetch(`${API_BASE}competitions/2013/teams`, {
     headers: { "X-Auth-Token": API_KEY },
@@ -23,6 +23,7 @@ function populateTeams(teams) {
   });
 }
 
+// Ao selecionar time
 document.getElementById("teamSelect").addEventListener("change", (e) => {
   const selected = e.target.options[e.target.selectedIndex];
   if (selected.value && selected.dataset.id) {
@@ -31,64 +32,70 @@ document.getElementById("teamSelect").addEventListener("change", (e) => {
 });
 
 function selectTeam(team) {
+  const teamSection = document.getElementById("teamSection");
   const pitch = document.getElementById("pitch");
   const bench = document.getElementById("benchList");
-  const teamSection = document.getElementById("teamSection");
   const teamInfo = document.getElementById("teamInfo");
+  const teamLogo = document.getElementById("teamLogo");
+  const competitions = document.getElementById("competitionsList");
 
-  document.getElementById("teamName").textContent = "";
   pitch.innerHTML = "";
   bench.innerHTML = "";
   teamInfo.innerHTML = "";
-  teamInfo.classList.add("hidden");
+  teamLogo.innerHTML = "";
+  competitions.innerHTML = "";
+  teamSection.classList.add("hidden");
 
   fetch(`${API_BASE}teams/${team.id}`, {
     headers: { "X-Auth-Token": API_KEY },
   })
     .then(r => r.json())
     .then(data => {
-      document.getElementById("teamName").textContent = data.name;
       teamSection.classList.remove("hidden");
+      document.getElementById("teamName").textContent = data.name;
+      teamLogo.innerHTML = data.crest ? `<img src="${data.crest}" alt="Escudo">` : "";
 
-      // 🧾 Exibir informações gerais do time
+      // Info do time
       const teamData = `
-        <p><strong>Nome completo:</strong> ${data.name}</p>
-        <p><strong>Fundado em:</strong> ${data.founded || "Desconhecido"}</p>
+        <p><strong>Fundado:</strong> ${data.founded || "Desconhecido"}</p>
         <p><strong>Estádio:</strong> ${data.venue || "Não informado"}</p>
         <p><strong>País:</strong> ${data.area?.name || "Desconhecido"}</p>
-        <p><strong>Site oficial:</strong> 
-          ${data.website ? `<a href="${data.website}" target="_blank">${data.website}</a>` : "Não disponível"}
-        </p>
+        <p><strong>Site:</strong> ${
+          data.website ? `<a href="${data.website}" target="_blank">${data.website}</a>` : "N/D"
+        }</p>
       `;
 
-      // 👔 Coach (técnico)
+      // Técnico
       let coachHTML = "";
       if (data.coach) {
         coachHTML = `
           <div class="coach-card">
-            <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Coach">
-            <div>
-              <p><strong>Técnico:</strong> ${data.coach.name}</p>
-              <p><strong>Nacionalidade:</strong> ${data.coach.nationality || "N/A"}</p>
-              <p><strong>Data de nascimento:</strong> ${data.coach.dateOfBirth || "N/A"}</p>
-            </div>
+            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077012.png" alt="Coach">
+            <p><strong>${data.coach.name}</strong></p>
+            <p>${data.coach.nationality || ""}</p>
           </div>
         `;
       }
 
-      teamInfo.innerHTML = teamData + coachHTML;
-      teamInfo.classList.remove("hidden");
+      teamInfo.innerHTML = `<h3>Informações</h3>${teamData}${coachHTML}`;
 
-      // ⚽ Montar elenco
+      // Competições
+      if (data.runningCompetitions?.length) {
+        data.runningCompetitions.forEach(c => {
+          const li = document.createElement("li");
+          li.textContent = c.name;
+          competitions.appendChild(li);
+        });
+      } else {
+        competitions.innerHTML = "<li>Sem competições ativas.</li>";
+      }
+
+      // Jogadores
       const squad = data.squad || [];
       const goalkeepers = squad.filter(p => p.position === "Goalkeeper");
       const defence = squad.filter(p => p.position === "Defence");
-      const midfield = squad.filter(p =>
-        ["Midfield", "Central Midfield", "Attacking Midfield", "Defensive Midfield"].includes(p.position)
-      );
-      const offence = squad.filter(p =>
-        ["Offence", "Forward", "Left Winger", "Right Winger", "Centre-Forward"].includes(p.position)
-      );
+      const midfield = squad.filter(p => p.position === "Midfield");
+      const offence = squad.filter(p => p.position === "Offence");
 
       const benchPlayers = renderFormation(goalkeepers, defence, midfield, offence);
       renderBench(benchPlayers);
@@ -96,66 +103,64 @@ function selectTeam(team) {
     .catch(err => console.error(err));
 }
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+// Ícones diferentes por posição
+function getPlayerImage(position) {
+  switch (position) {
+    case "Goalkeeper": return "https://static.vecteezy.com/ti/vetor-gratis/p1/3773404-futebol-luvas-com-bola-gratis-vetor.jpg";
+    case "Defence": return "https://static.vecteezy.com/ti/vetor-gratis/p1/27382508-medieval-heraldico-casaco-do-bracos-desenho-animado-plano-ilustracao-defesa-e-protecao-velho-armas-e-armaduras-do-cavaleiro-e-guerreiro-cinzento-guarda-escudo-e-cruzado-espada-vetor.jpg";
+    case "Midfield": return "https://images.vexels.com/media/users/3/140310/isolated/preview/e26362612f9316ef32b49451475d8f07-passe-de-jogador-de-futebol.png";
+    case "Offence": return "https://images.vexels.com/media/users/3/234542/isolated/preview/52602949bf63a8b7c396157d55bc5d97-rede-de-gol-de-futebol.png";
+    default: return "https://cdn-icons-png.flaticon.com/512/3176/3176266.png";
   }
 }
 
+// Renderização da formação
 function renderFormation(goalkeepers, defence, midfield, offence) {
   const pitch = document.getElementById("pitch");
-  shuffleArray(goalkeepers);
-  shuffleArray(defence);
-  shuffleArray(midfield);
-  shuffleArray(offence);
-
   const gk = goalkeepers.slice(0, 1);
   const def = defence.slice(0, 4);
   const mid = midfield.slice(0, 3);
   const off = offence.slice(0, 3);
-  const reserves = goalkeepers.slice(1)
-    .concat(defence.slice(4))
-    .concat(midfield.slice(3))
-    .concat(offence.slice(3));
 
-  createLine(pitch, "gk", gk);
-  createLine(pitch, "def", def);
-  createLine(pitch, "mid", mid);
-  createLine(pitch, "fwd", off);
-  return reserves;
+  createLine(pitch, gk, 50, 90);
+  createLine(pitch, def, 50, 70);
+  createLine(pitch, mid, 50, 50);
+  createLine(pitch, off, 50, 30);
+
+  return [...goalkeepers.slice(1), ...defence.slice(4), ...midfield.slice(3), ...offence.slice(3)];
 }
 
-function createLine(pitch, lineClass, players) {
-  const line = document.createElement("div");
-  line.classList.add("line", lineClass);
-  players.forEach(p => {
-    const el = document.createElement("div");
-    el.classList.add("player");
-    el.innerHTML = `
-      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="${p.name}">
-      <span>${p.name}</span>
-    `;
-    el.addEventListener("click", () => showPlayerInfo(p));
-    line.appendChild(el);
+// Cria linhas
+function createLine(pitch, players, centerY, yPos) {
+  const spacing = 100 / (players.length + 1);
+  players.forEach((p, i) => {
+    const x = spacing * (i + 1);
+    const div = document.createElement("div");
+    div.classList.add("player");
+    div.style.left = `${x}%`;
+    div.style.top = `${yPos}%`;
+
+    const img = getPlayerImage(p.position);
+    div.innerHTML = `<img src="${img}" alt=""><span>${p.name}</span>`;
+    div.addEventListener("click", () => showPlayerInfo(p));
+    pitch.appendChild(div);
   });
-  pitch.appendChild(line);
 }
 
+// Banco
 function renderBench(players) {
   const bench = document.getElementById("benchList");
   players.forEach(p => {
+    const img = getPlayerImage(p.position);
     const el = document.createElement("div");
     el.classList.add("player");
-    el.innerHTML = `
-      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="${p.name}">
-      <span>${p.name}</span>
-    `;
+    el.innerHTML = `<img src="${img}" alt=""><span>${p.name}</span>`;
     el.addEventListener("click", () => showPlayerInfo(p));
     bench.appendChild(el);
   });
 }
 
+// Modal jogador
 function showPlayerInfo(player) {
   const modal = document.getElementById("playerModal");
   const details = document.getElementById("playerDetails");
@@ -165,7 +170,7 @@ function showPlayerInfo(player) {
     <p><strong>Nacionalidade:</strong> ${player.nationality || "N/A"}</p>
     <p><strong>Data de nascimento:</strong> ${player.dateOfBirth || "N/A"}</p>
   `;
-  modal.classList.remove("hidden");
-  document.getElementById("closeModal").onclick = () => modal.classList.add("hidden");
-  modal.onclick = (e) => { if (e.target === modal) modal.classList.add("hidden"); };
+  modal.style.display = "flex";
+  document.getElementById("closeModal").onclick = () => modal.style.display = "none";
+  modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
 }
